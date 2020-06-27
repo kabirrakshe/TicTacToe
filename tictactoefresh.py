@@ -1,3 +1,5 @@
+# this is my program
+
 from random import choice #Probability Library
 import time
 for x in range(0,5):
@@ -9,7 +11,8 @@ avatar = input('Choose a character: X or O: ').upper()
 if avatar == 'X': avatarcpu = 'O'
 else: avatarcpu = 'X'
 winner = 'No One'
-winlose = {}
+winlose = {'Player':0,'CPU':0,'No One':0}
+moves = []
 def Introduction():
     print('READY!!!')
     time.sleep(1)
@@ -38,27 +41,23 @@ def Player1():# Certain coordinates correspond to indices in list
 ###----------------------------------------------------------------------------
 def enemyreference():
     count = -1
-    adjacent = None
-    primary = -1
     thing = 0
-    column = board[:][thing]
-    count = -1
+    column = (board[0][thing],board[1][thing],board[2][thing])
     for items in board:
         count = count +1
         if items.count(avatar) == 2 and '_' in items:
             fill = items.index('_')
             board[count][fill] = avatarcpu
             boardprinter('CPU')
-            print('hi')
-            return
+            return True
     while thing < 2:
         if column.count(avatar) ==2 and '_' in column:
             fill = column.index('_')
             board[fill][thing] = avatarcpu
             boardprinter('CPU')
-            return
+            return True
         thing = thing+1
-        column = board[:][thing]
+        column = (board[0][thing],board[1][thing],board[2][thing])
 
 def enemyhardreference():
     diagonala = (board[0][0],board[1][1],board[2][2])
@@ -70,15 +69,15 @@ def enemyhardreference():
         else: diag = 2
         board[fill][diag] = avatarcpu
         boardprinter('CPU')
-        return
+        return True
     elif diagonalb.count(avatar)== 2 and '_' in diagonalb:
         fill = diagonalb.index('_')
         if fill == 0: diag = 2
         elif fill == 1: diag = 1
-        else: diag = 0
+        elif fill == 2: diag = 0
         board[fill][diag] = avatarcpu
         boardprinter('CPU')
-        return
+        return True
 ###----------------------------------------------------------------------------------
 def Easy_mode():#Activated if user input(starting) == 'easy' Chooses random only
     while True:
@@ -88,31 +87,33 @@ def Easy_mode():#Activated if user input(starting) == 'easy' Chooses random only
             board[y][x] = avatarcpu
             boardprinter('CPU')
             return
-        else:
-            continue
+        else: continue
 ###-----------------------------------------------------------------------------
-def Mid_mode():
+def Mid_mode(diff):
     count = -1
-    adjacent = None
-    primary = -1
     thing = 0
-    column = board[:][thing]
+    column = (board[0][thing],board[1][thing],board[2][thing])
     for items in board:
         count = count + 1
-        if items.count(avatarcpu) == 2and '_' in items:
+        if items.count(avatarcpu) == 2 and '_' in items:
             fill = items.index('_')
             board[count][fill] = avatarcpu
             boardprinter('CPU')
-            return
+            return True
     while thing < 2:
         if column.count(avatarcpu) == 2 and '_' in column:
             fill = column.index('_')
             board[fill][thing] = avatarcpu
             boardprinter('CPU')
-            return
+            return True
         thing = thing+1
-        column = board[:][thing]
-        enemyreference()
+        column = (board[0][thing],board[1][thing],board[2][thing])
+        if enemyreference() == True: return True
+        else:
+            if diff == 'hard': return
+            else:
+                Easy_mode()
+                return
 ###-----------------------------------------------------------------------------
 def Hard_mode():
     diagonala = (board[0][0],board[1][1],board[2][2])
@@ -133,54 +134,72 @@ def Hard_mode():
         board[fill][diag] = avatarcpu
         boardprinter('CPU')
         return
-    Mid_mode()
-    enemyhardreference()
+    if Mid_mode('hard') == True: return
+    else:
+        if enemyhardreference() == True: return
+        else:
+            if enemyreference() == True: return
+            else: Easy_mode()
 ###------------------------------------------------------------------------------
 def gameover(): #Function to decide when game is finished
+    thing = 0
     for row in board:
         if row[0] == row[1] == row[2] != '_':
             return True
-    acolumn = board[:][0]
-    bcolumn = board[:][1]
-    ccolumn = board[:][2]
-    for node in [acolumn,bcolumn,ccolumn]:
-        if node[0] == node[1] == node[2] != '_':
+    while thing <= 2:
+        acolumn = (board[0][thing],board[1][thing],board[2][thing])
+        if acolumn[0] == acolumn[1] == acolumn[2] != '_':
             return True
+        thing = thing + 1
     if board[0][0] == board[1][1] == board[2][2] != '_':
         return True
     elif board[0][2] == board[1][1] == board[2][0] != '_':
         return True
-    return False
-    if board[0 and 1 and 2].count('_') == 0:
+    rowa = board[0]
+    rowb = board[1]
+    rowc = board[2]
+    if rowa.count('_') and rowb.count('_') and rowc.count('_') == 0:
         return True
     return False
 ###-----------------------------------------------------------------------------
 
 def Initiate():#Initiation Sequence, Apex Function
-    global board
     global winner
     global winlose
     global starting
+    global moves
     Introduction()
     for value in range(5):
         Player1()
         if gameover() == True:
-            if board[0 and 1 and 2].count('_')>0:
-                winner = 'Player'
+            winner = 'Player'
             break
-        if starting == 'easy': Easy_mode()
-        elif starting == 'medium': Mid_mode()
-        elif starting == 'hard': Hard_mode()
+        if starting == 'easy':
+            diff = 1
+            Easy_mode()
+        elif starting == 'medium':
+            diff = 2
+            Mid_mode('')
+        elif starting == 'hard':
+            diff = 4
+            Hard_mode()
         if gameover() == True:
             winner = 'CPU'
             break
-    winlose[winner] = winlose.get(winner,0) + 1
+    winlose[winner] = winlose[winner] + 1
     print('The winner of this match is......\n')
+    time.sleep(3)
     print(winner+'!!!!!!')
-    print(winlose)
+    print('Your total wins, losses, and ties: ',winlose)
+    moves.append((10/value) * diff)
     final_question = input('Would you like to play again? ').lower()
     if final_question.strip() == 'no':
-        # print('Based on your overall performance and the difficulty you chose, the computer gives you a rating of',rating,'out of 100')
+        sum = 0
+        for overall in moves:
+            sum = sum + overall
+        sum = sum + ((winlose['Player']/((winlose['CPU'] + winlose['Player']) * diff)
+        denominator = winlose['Player'] + winlose['CPU']
+        print('Based on your overall performance and the difficulty you chose, the computer gives you a ranking of ',sum,' out of ',denominator*10)
         quit()
     else:
         board = [['_','_','_'],['_','_','_'],['_','_','_']] #Mutable base board
