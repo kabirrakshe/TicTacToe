@@ -13,6 +13,7 @@ else: avatarcpu = 'X'
 winner = 'No One'
 winlose = {'Player':0,'CPU':0,'No One':0}
 moves = []
+level = []
 def Introduction():
     print('READY!!!')
     time.sleep(1)
@@ -158,7 +159,7 @@ def gameover(): #Function to decide when game is finished
     rowa = board[0]
     rowb = board[1]
     rowc = board[2]
-    if rowa.count('_') and rowb.count('_') and rowc.count('_') == 0:
+    if rowa.count('_')== 0 and rowb.count('_') == 0 and rowc.count('_') == 0:
         return True
     return False
 ###-----------------------------------------------------------------------------
@@ -168,6 +169,7 @@ def Initiate():#Initiation Sequence, Apex Function
     global winlose
     global starting
     global moves
+    global level
     Introduction()
     for value in range(5):
         Player1()
@@ -191,18 +193,24 @@ def Initiate():#Initiation Sequence, Apex Function
     time.sleep(3)
     print(winner+'!!!!!!')
     print('Your total wins, losses, and ties: ',winlose)
-    moves.append((10/value) * diff)
+    moves.append(10/value) # save the rating
+    level.append(diff)
     final_question = input('Would you like to play again? ').lower()
     if final_question.strip() == 'no':
-        sum = 0
+        # ranking calculation
+        suma = 0
+        sumb = 0
         for overall in moves:
-            sum = sum + overall
-        sum = sum + ((winlose['Player']/((winlose['CPU'] + winlose['Player']) * diff)
-        denominator = winlose['Player'] + winlose['CPU']
-        print('Based on your overall performance and the difficulty you chose, the computer gives you a ranking of ',sum,' out of ',denominator*10)
+            suma = suma + overall
+        for average in level:
+            sumb = sumb+average
+        sumb = sumb / len(level)
+        suma = suma + sumb - winlose['CPU']
+        denominator = winlose['Player']+winlose['CPU']
+        print('Player Ranking Based on Skill: ',suma,' out of ',denominator*10)
         quit()
     else:
-        board = [['_','_','_'],['_','_','_'],['_','_','_']] #Mutable base board
+        board = [['_','_','_'],['_','_','_'],['_','_','_']]
         starting = input('Choose a setting: Easy, Medium, Hard: ').lower()
         avatar = input('Choose a character: X or O: ').upper()
         if avatar == 'X': avatarcpu = 'O'
