@@ -63,21 +63,22 @@ def enemyreference():
 def enemyhardreference():
     diagonala = (board[0][0],board[1][1],board[2][2])
     diagonalb = (board[2][0],board[1][1],board[0][2])
-    if diagonala.count(avatar) == 2 and '_' in diagonala:
+    if diagonala.count(avatar) ==2 and '_' in diagonala:
         fill = diagonala.index('_')
         if fill == 0: diag = 0
         elif fill == 1: diag = 1
         else: diag = 2
-        board[fill][diag] = avatarcpu
+        board[diag][fill] = avatarcpu
         boardprinter('CPU')
         return True
-    elif diagonalb.count(avatar)== 2 and '_' in diagonalb:
+    elif diagonalb.count(avatar) ==2 and '_' in diagonalb:
         fill = diagonalb.index('_')
         if fill == 0: diag = 2
         elif fill == 1: diag = 1
-        elif fill == 2: diag = 0
-        board[fill][diag] = avatarcpu
+        else: diag = 0
+        board[diag][fill] = avatarcpu
         boardprinter('CPU')
+        print('hi')
         return True
 ###----------------------------------------------------------------------------------
 def Easy_mode():#Activated if user input(starting) == 'easy' Chooses random only
@@ -165,57 +166,58 @@ def gameover(): #Function to decide when game is finished
 ###-----------------------------------------------------------------------------
 
 def Initiate():#Initiation Sequence, Apex Function
-    global winner
-    global winlose
-    global starting
-    global moves
-    global level
-    Introduction()
-    for value in range(5):
-        Player1()
-        if gameover() == True:
-            winner = 'Player'
-            break
-        if starting == 'easy':
-            diff = 1
-            Easy_mode()
-        elif starting == 'medium':
-            diff = 2
-            Mid_mode('')
-        elif starting == 'hard':
-            diff = 4
-            Hard_mode()
-        if gameover() == True:
-            winner = 'CPU'
-            break
-    winlose[winner] = winlose[winner] + 1
-    print('The winner of this match is......\n')
-    time.sleep(3)
-    print(winner+'!!!!!!')
-    print('Your total wins, losses, and ties: ',winlose)
-    moves.append(10/value) # save the rating
-    level.append(diff)
-    final_question = input('Would you like to play again? ').lower()
-    if final_question.strip() == 'no':
-        # ranking calculation
-        suma = 0
-        sumb = 0
-        for overall in moves:
-            suma = suma + overall
-        for average in level:
-            sumb = sumb+average
-        sumb = sumb / len(level)
-        suma = suma + sumb - winlose['CPU']
-        denominator = winlose['Player']+winlose['CPU']
-        print('Player Ranking Based on Skill: ',suma,' out of ',denominator*10)
-        quit()
-    else:
-        board = [['_','_','_'],['_','_','_'],['_','_','_']]
-        starting = input('Choose a setting: Easy, Medium, Hard: ').lower()
-        avatar = input('Choose a character: X or O: ').upper()
-        if avatar == 'X': avatarcpu = 'O'
-        else: avatarcpu = 'X'
-        winner = 'No One'
-        Initiate()
+    while True:
+        global winner
+        global winlose
+        global starting
+        global moves
+        global level
+        global board
+        Introduction()
+        for value in range(5):
+            Player1()
+            if gameover() == True:
+                winner = 'Player'
+                break
+            if starting == 'easy':
+                diff = 1
+                Easy_mode()
+            elif starting == 'medium':
+                diff = 2
+                Mid_mode('')
+            elif starting == 'hard':
+                diff = 4
+                Hard_mode()
+            if gameover() == True:
+                winner = 'CPU'
+                break
+        winlose[winner] = winlose[winner] + 1
+        print('The winner of this match is......\n')
+        time.sleep(3)
+        print(winner+'!!!!!!')
+        print('Your total wins, losses, and ties: ',winlose)
+        moves.append(10/value) # save the rating
+        level.append(diff)
+        final_question = input('Would you like to play again? ').lower()
+        if final_question.strip() == 'no':# ranking calculation
+            suma = 0
+            sumb = 0
+            for overall in moves:
+                suma = suma + overall
+            for average in level:
+                sumb = sumb+average
+            sumb = sumb / len(level)
+            suma = suma + sumb - winlose['CPU']
+            denominator = winlose['Player']+winlose['CPU']
+            print('Player Ranking Based on Skill: ',suma,' out of ',denominator*10)
+            quit()
+        else:
+            board = [['_','_','_'],['_','_','_'],['_','_','_']]
+            starting = input('Choose a setting: Easy, Medium, Hard: ').lower()
+            avatar = input('Choose a character: X or O: ').upper()
+            if avatar == 'X': avatarcpu = 'O'
+            else: avatarcpu = 'X'
+            winner = 'No One'
+            continue
 #-------------------------------------------------------------------------------
 Initiate() ##firsttime
