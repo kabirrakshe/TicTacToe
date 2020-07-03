@@ -1,10 +1,4 @@
-
-
-
-
-
 #Find average of n numbers
-
 sum_value = 0
 count = 0
 while True:

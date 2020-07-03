@@ -78,7 +78,6 @@ def enemyhardreference():
         else: diag = 0
         board[diag][fill] = avatarcpu
         boardprinter('CPU')
-        print('hi')
         return True
 ###----------------------------------------------------------------------------------
 def Easy_mode():#Activated if user input(starting) == 'easy' Chooses random only
