@@ -206,7 +206,9 @@ def Initiate():#Initiation Sequence, Apex Function
             for average in level:
                 sumb = sumb+average
             sumb = sumb / len(level)
-            suma = suma + sumb - winlose['CPU']
+            if winlose['CPU'] or winlose['No One']>0:
+                suma = suma + sumb * (winlose['Player']/(2*winlose['CPU']+winlose['No One']))
+            else: suma = suma + sumb
             denominator = winlose['Player']+winlose['CPU']
             print('Player Ranking Based on Skill: ',suma,' out of ',denominator*10)
             quit()
