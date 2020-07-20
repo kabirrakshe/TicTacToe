@@ -111,7 +111,7 @@ def Mid_mode(diff):
         column = (board[0][thing],board[1][thing],board[2][thing])
         if enemyreference() == True: return True
         else:
-            if diff == 'hard': return
+            if diff == 'hard': return False
             else:
                 Easy_mode()
                 return
