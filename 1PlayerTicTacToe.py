@@ -162,6 +162,20 @@ def gameover(): #Function to decide when game is finished
     if rowa.count('_')== 0 and rowb.count('_') == 0 and rowc.count('_') == 0:
         return True
     return False
+
+def NoOne():
+    global board
+    for row in board:
+        if row[0] == row[1] == row[2]:
+            return False
+    for column in (board[:][0],board[:][1],board[:][2]):
+        if column[0] == column[1] == column[2]:
+            return False
+    if board[0][0] == board[1][1] == board[2][2]:
+        return False
+    if board[0][2] == board[1][1] == board[2][0]:
+        return False
+    return True
 ###-----------------------------------------------------------------------------
 
 def Initiate():#Initiation Sequence, Apex Function
@@ -176,7 +190,8 @@ def Initiate():#Initiation Sequence, Apex Function
         for value in range(5):
             Player1()
             if gameover() == True:
-                winner = 'Player'
+                if board.count('_') == 0 and NoOne() == False:
+                    winner = 'Player'
                 break
             if starting == 'easy':
                 diff = 1
@@ -210,7 +225,7 @@ def Initiate():#Initiation Sequence, Apex Function
                 suma = suma + sumb * (winlose['Player']/(2*winlose['CPU']+winlose['No One']))
             else: suma = suma + sumb
             denominator = winlose['Player']+winlose['CPU']
-            print('Player Ranking Based on Skill: ',suma,' out of ',denominator*10)
+            print('Player Ranking: ',suma,' out of ',denominator*10)
             quit()
         else:
             board = [['_','_','_'],['_','_','_'],['_','_','_']]
